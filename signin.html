@@ -1,43 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Sign In</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In | AI Audio Classification</title>
+
 <style>
+:root {
+    --bg: #0b0d13;
+    --panel: #12141c;
+    --accent: #7c7cff;
+    --text: #ffffff;
+    --muted: #a1a1aa;
+}
+
+* { box-sizing: border-box; }
+
 body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #f5f7fa;
-    font-family: Arial;
+    justify-content: center;
+    overflow: hidden;
 }
-.card {
-    background: white;
-    padding: 30px;
-    width: 350px;
-    border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+
+/* ---------- BACKGROUND ORBS ---------- */
+.bg-anim {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
 }
-input, button {
+
+.orb {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    animation: float 30s infinite alternate ease-in-out;
+}
+
+.orb.one {
+    background: #7c7cff;
+    top: -120px;
+    left: -120px;
+}
+
+.orb.two {
+    background: #4ade80;
+    bottom: -120px;
+    right: -120px;
+    animation-duration: 36s;
+}
+
+@keyframes float {
+    from { transform: translate(0,0); }
+    to { transform: translate(120px,-140px); }
+}
+
+/* ---------- PANEL ---------- */
+.panel {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
+    max-width: 420px;
+    background: var(--panel);
+    padding: 42px;
+    border-radius: 22px;
+    box-shadow: 0 35px 90px rgba(0,0,0,0.6);
+    animation: fadeUp 0.8s ease forwards;
 }
-button {
-    background: #1d2671;
-    color: white;
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+}
+
+/* ---------- INPUTS ---------- */
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: var(--muted);
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: none;
-    border-radius: 8px;
+    background: #1c1f2a;
+    color: var(--text);
+    font-size: 14px;
+}
+
+input:focus {
+    outline: 2px solid var(--accent);
+}
+
+/* ---------- BUTTON ---------- */
+button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(124,124,255,0.45);
+}
+
+/* ---------- FOOTER ---------- */
+.footer {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
-    <h2>🔐 Sign In</h2>
-    <input type="text" placeholder="Username">
-    <input type="password" placeholder="Password">
-    <button onclick="location.href='index.html'">Login</button>
+
+<!-- BACKGROUND -->
+<div class="bg-anim">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
 </div>
+
+<!-- SIGN IN PANEL -->
+<div class="panel">
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Sign in to continue</p>
+
+    <div class="input-group">
+        <label>Email</label>
+        <input type="email" placeholder="you@example.com">
+    </div>
+
+    <div class="input-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••">
+    </div>
+
+    <!-- UI-only flow -->
+    <button onclick="goDemo()">Sign In</button>
+
+    <div class="footer">
+        Don’t have an account?
+        <a href="signup.html">Sign up</a><br><br>
+        <a href="index.html">← Back to Home</a>
+    </div>
+</div>
+
+<script>
+function goDemo() {
+    // Hackathon-safe: no real auth, direct demo
+    window.location.href = "detect.html";
+}
+</script>
+
 </body>
 </html>
