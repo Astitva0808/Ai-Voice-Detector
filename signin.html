@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In | AI Audio Classification</title>
+<title>Sign Up | AI Audio Classification</title>
 
 <style>
 :root {
@@ -53,7 +53,7 @@ body {
 }
 
 .orb.two {
-    background: #4ade80;
+    background: #f87171;
     bottom: -120px;
     right: -120px;
     animation-duration: 36s;
@@ -67,7 +67,7 @@ body {
 /* ---------- PANEL ---------- */
 .panel {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     background: var(--panel);
     padding: 42px;
     border-radius: 22px;
@@ -95,7 +95,7 @@ h1 {
 
 /* ---------- INPUTS ---------- */
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 label {
@@ -122,7 +122,7 @@ input:focus {
 /* ---------- BUTTON ---------- */
 button {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 12px;
     padding: 14px;
     border-radius: 12px;
     border: none;
@@ -166,10 +166,15 @@ button:hover {
     <div class="orb two"></div>
 </div>
 
-<!-- SIGN IN PANEL -->
+<!-- SIGN UP PANEL -->
 <div class="panel">
-    <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to continue</p>
+    <h1>Create Account</h1>
+    <p class="subtitle">Join to explore AI voice detection</p>
+
+    <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your name">
+    </div>
 
     <div class="input-group">
         <label>Email</label>
@@ -181,19 +186,24 @@ button:hover {
         <input type="password" placeholder="••••••••">
     </div>
 
+    <div class="input-group">
+        <label>Confirm Password</label>
+        <input type="password" placeholder="••••••••">
+    </div>
+
     <!-- UI-only flow -->
-    <button onclick="goDemo()">Sign In</button>
+    <button onclick="goDemo()">Create Account</button>
 
     <div class="footer">
-        Don’t have an account?
-        <a href="signup.html">Sign up</a><br><br>
+        Already have an account?
+        <a href="signin.html">Sign in</a><br><br>
         <a href="index.html">← Back to Home</a>
     </div>
 </div>
 
 <script>
 function goDemo() {
-    // Hackathon-safe: no real auth, direct demo
+    // Hackathon-safe flow
     window.location.href = "detect.html";
 }
 </script>
