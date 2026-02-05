@@ -3,67 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Audio Detection | Demo</title>
+<title>AI Audio Detector | Analyze</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
+    min-height: 100vh;
     font-family: "Segoe UI", Arial, sans-serif;
     background: linear-gradient(135deg, #1d2671, #c33764);
-    color: white;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    justify-content: center;
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
 }
 
 .card {
-    background: white;
-    color: #333;
-    padding: 40px;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 h1 {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 28px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    color: transparent;
 }
 
 .subtitle {
     font-size: 14px;
-    color: #555;
+    color: #666;
     margin-bottom: 25px;
 }
 
 input[type="file"] {
     width: 100%;
     padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
     margin-bottom: 20px;
 }
 
 button {
     width: 100%;
     padding: 14px;
+    border-radius: 10px;
     border: none;
-    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
     background: linear-gradient(90deg, #667eea, #764ba2);
     color: white;
-    font-size: 16px;
     cursor: pointer;
+    transition: 0.25s;
 }
 
 button:hover {
-    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(118,75,162,0.5);
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .loader {
-    margin: 20px auto;
+    margin: 20px auto 10px;
     width: 40px;
     height: 40px;
-    border: 4px solid #ddd;
+    border: 4px solid #eee;
     border-top: 4px solid #764ba2;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -74,41 +107,92 @@ button:hover {
     to { transform: rotate(360deg); }
 }
 
-#status {
+.status {
     margin-top: 15px;
     font-size: 14px;
+    color: #555;
 }
 
-#result {
+.result {
     margin-top: 20px;
-    font-size: 16px;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 18px;
     font-weight: bold;
+    display: none;
+}
+
+.result.human {
+    background: #e8f7ee;
+    color: #0a7a3d;
+}
+
+.result.ai {
+    background: #fdeaea;
+    color: #b40000;
+}
+
+.confidence {
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: normal;
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.back {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #667eea;
+    cursor: pointer;
+    text-decoration: underline;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h1>🎧 Detect Audio</h1>
-    <p class="subtitle">Upload an audio file to check if it is Human or AI Generated</p>
+<div class="container">
+    <div class="card">
+        <h1>🎧 Audio Analysis</h1>
+        <p class="subtitle">
+            Upload an audio file to check whether it is
+            <b>Human</b> or <b>AI Generated</b>
+        </p>
 
-    <input type="file" id="audioFile" accept=".wav,.mp3">
-    <button onclick="analyze()">Analyze Audio</button>
+        <input type="file" id="audioFile" accept=".wav,.mp3">
 
-    <div class="loader" id="loader"></div>
-    <div id="status"></div>
-    <div id="result"></div>
+        <button id="analyzeBtn" onclick="uploadAudio()">Analyze Audio</button>
+
+        <div id="loader" class="loader"></div>
+        <div id="status" class="status"></div>
+
+        <div id="result" class="result">
+            <div id="predictionText"></div>
+            <div id="confidenceText" class="confidence"></div>
+            <div id="explanationText" class="explanation"></div>
+        </div>
+
+        <div class="back" onclick="goHome()">← Back to Home</div>
+    </div>
 </div>
 
 <script>
-async function analyze() {
+async function uploadAudio() {
     const fileInput = document.getElementById("audioFile");
-    const loader = document.getElementById("loader");
     const status = document.getElementById("status");
+    const loader = document.getElementById("loader");
     const result = document.getElementById("result");
+    const btn = document.getElementById("analyzeBtn");
 
-    if (fileInput.files.length === 0) {
+    result.style.display = "none";
+    status.innerText = "";
+
+    if (!fileInput.files.length) {
         alert("Please select an audio file");
         return;
     }
@@ -117,8 +201,8 @@ async function analyze() {
     formData.append("file", fileInput.files[0]);
 
     loader.style.display = "block";
+    btn.disabled = true;
     status.innerText = "⏳ Analyzing audio...";
-    result.innerText = "";
 
     try {
         const response = await fetch(
@@ -133,24 +217,33 @@ async function analyze() {
         );
 
         const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "API error");
 
-        if (!response.ok) {
-            throw new Error(data.detail || "API error");
-        }
+        result.style.display = "block";
+        result.className = "result " + (data.prediction === "human" ? "human" : "ai");
 
-        status.innerText = "✅ Analysis Complete";
-        result.innerHTML = `
-            Prediction: <b>${data.prediction}</b><br>
-            Confidence: ${data.confidence}<br>
-            <small>${data.explanation || ""}</small>
-        `;
+        document.getElementById("predictionText").innerText =
+            data.prediction === "human" ? "🧑 Human Voice Detected" : "🤖 AI Generated Voice";
+
+        document.getElementById("confidenceText").innerText =
+            `Confidence: ${data.confidence}`;
+
+        document.getElementById("explanationText").innerText =
+            data.explanation || "";
+
+        status.innerText = "✅ Analysis complete";
 
     } catch (err) {
-        status.innerText = "❌ Error analyzing audio";
         console.error(err);
+        status.innerText = "❌ Failed to analyze audio";
     } finally {
         loader.style.display = "none";
+        btn.disabled = false;
     }
+}
+
+function goHome() {
+    window.location.href = "index.html";
 }
 </script>
 
