@@ -42,7 +42,6 @@ body {
     box-shadow: 0 35px 90px rgba(0,0,0,0.6);
 }
 
-/* ---------- HEADER ---------- */
 h1 {
     margin: 0 0 10px;
     font-size: 34px;
@@ -55,17 +54,11 @@ h1 {
     margin-bottom: 36px;
 }
 
-/* ---------- UPLOAD ---------- */
 .upload {
     border: 1px dashed rgba(255,255,255,0.25);
     border-radius: 14px;
     padding: 28px;
     text-align: center;
-    transition: border-color 0.25s;
-}
-
-.upload:hover {
-    border-color: var(--accent);
 }
 
 .upload input {
@@ -73,7 +66,6 @@ h1 {
     color: var(--muted);
 }
 
-/* ---------- BUTTON ---------- */
 button {
     margin-top: 24px;
     width: 100%;
@@ -85,12 +77,6 @@ button {
     cursor: pointer;
     background: var(--accent);
     color: #fff;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 28px rgba(124,124,255,0.45);
 }
 
 button:disabled {
@@ -98,14 +84,12 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* ---------- STATUS ---------- */
 #status {
     margin-top: 20px;
     font-size: 14px;
     color: var(--muted);
 }
 
-/* ---------- WAVEFORM ---------- */
 .waveform {
     display: none;
     margin-top: 20px;
@@ -117,32 +101,20 @@ button:disabled {
 
 .wave {
     width: 4px;
-    height: 100%;
     background: var(--accent);
-    opacity: 0.7;
     animation: pulse 1.2s infinite ease-in-out;
 }
-
-.wave:nth-child(odd) { animation-delay: 0.15s; }
-.wave:nth-child(even) { animation-delay: 0.3s; }
 
 @keyframes pulse {
     0%, 100% { height: 20%; }
     50% { height: 100%; }
 }
 
-/* ---------- RESULT ---------- */
 .result {
     margin-top: 36px;
     display: none;
 }
 
-.result h2 {
-    font-size: 22px;
-    margin-bottom: 12px;
-}
-
-/* ---------- CONFIDENCE BAR ---------- */
 .bar {
     background: rgba(255,255,255,0.15);
     height: 14px;
@@ -162,15 +134,12 @@ button:disabled {
     color: var(--muted);
 }
 
-/* ---------- EXPLANATION ---------- */
 .explanation {
     margin-top: 18px;
     font-size: 15px;
-    line-height: 1.6;
     color: #e5e7eb;
 }
 
-/* ---------- FOOTER ---------- */
 .footer {
     margin-top: 30px;
     font-size: 13px;
@@ -178,50 +147,42 @@ button:disabled {
     text-align: center;
     cursor: pointer;
 }
-.footer:hover { text-decoration: underline; }
 </style>
 </head>
 
 <body>
 
 <div class="wrapper">
-    <div class="panel">
-        <h1>AI Voice Authenticity Detection</h1>
-        <p class="subtitle">
-            Analyze an audio sample to determine whether it is
-            <b>human-spoken</b> or <b>AI-generated</b>.
-        </p>
+<div class="panel">
+<h1>AI Voice Authenticity Detection</h1>
+<p class="subtitle">Analyze whether an audio sample is human or AI generated.</p>
 
-        <div class="upload">
-            Upload an audio file (MP3 or WAV)
-            <input type="file" id="audioFile" accept=".mp3,.wav">
-        </div>
+<div class="upload">
+Upload audio file (MP3 / WAV)
+<input type="file" id="audioFile" accept=".mp3,.wav">
+</div>
 
-        <button id="analyzeBtn">Analyze Audio</button>
+<button id="analyzeBtn">Analyze Audio</button>
+<div id="status"></div>
 
-        <div id="status"></div>
+<div id="waveform" class="waveform">
+<div class="wave"></div><div class="wave"></div><div class="wave"></div>
+<div class="wave"></div><div class="wave"></div><div class="wave"></div>
+</div>
 
-        <!-- Waveform -->
-        <div id="waveform" class="waveform">
-            <div class="wave"></div><div class="wave"></div><div class="wave"></div>
-            <div class="wave"></div><div class="wave"></div><div class="wave"></div>
-            <div class="wave"></div><div class="wave"></div><div class="wave"></div>
-        </div>
+<div id="result" class="result">
+<h2 id="prediction"></h2>
 
-        <!-- Result -->
-        <div id="result" class="result">
-            <h2 id="prediction"></h2>
+<div class="bar">
+<div id="confidenceBar" class="bar-fill"></div>
+</div>
 
-            <div class="bar">
-                <div id="confidenceBar" class="bar-fill"></div>
-            </div>
-            <div id="confidenceText" class="confidence-text"></div>
+<div id="confidenceText" class="confidence-text"></div>
+<div id="explanation" class="explanation"></div>
+</div>
 
-            <div id="explanation" class="explanation"></div>
-        </div>
-
-        <div class="footer" onclick="goHome()">← Back to Home</div>
-    </div>
+<div class="footer" onclick="window.location.href='index.html'">← Back to Home</div>
+</div>
 </div>
 
 <script>
@@ -229,9 +190,6 @@ const btn = document.getElementById("analyzeBtn");
 const fileInput = document.getElementById("audioFile");
 
 btn.addEventListener("click", analyze);
-fileInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") analyze();
-});
 
 async function analyze() {
     const status = document.getElementById("status");
@@ -251,14 +209,7 @@ async function analyze() {
     result.style.display = "none";
     waveform.style.display = "flex";
     bar.style.width = "0%";
-    status.innerText = "AI analyzing audio";
-
-    // animated dots
-    let dots = 0;
-    const dotTimer = setInterval(() => {
-        dots = (dots + 1) % 4;
-        status.innerText = "AI analyzing audio" + ".".repeat(dots);
-    }, 500);
+    status.innerText = "AI analyzing audio...";
 
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
@@ -276,11 +227,11 @@ async function analyze() {
         const data = await response.json();
         if (!response.ok) throw new Error(data.detail);
 
-        clearInterval(dotTimer);
         waveform.style.display = "none";
         result.style.display = "block";
 
-        const pct = (data.confidence * 100).toFixed(1);
+        const confidenceValue = Number(data.confidence);
+        const pct = Math.round(confidenceValue * 1000) / 10;
         const isHuman = data.prediction === "human";
 
         prediction.innerText = isHuman
@@ -291,7 +242,12 @@ async function analyze() {
             ? "linear-gradient(90deg, #4ade80, #22c55e)"
             : "linear-gradient(90deg, #f87171, #7c7cff)";
 
-        setTimeout(() => bar.style.width = pct + "%", 150);
+        bar.style.width = "0%";
+        bar.offsetWidth;
+
+        setTimeout(() => {
+            bar.style.width = pct + "%";
+        }, 200);
 
         confText.innerText = `Confidence: ${pct}%`;
         explanation.innerText = data.explanation || "";
@@ -299,17 +255,12 @@ async function analyze() {
         status.innerText = "Analysis complete";
 
     } catch (err) {
-        clearInterval(dotTimer);
         waveform.style.display = "none";
         status.innerText = "Failed to analyze audio";
         console.error(err);
     } finally {
         btn.disabled = false;
     }
-}
-
-function goHome() {
-    window.location.href = "index.html";
 }
 </script>
 
