@@ -6,203 +6,201 @@
 <title>AI Audio Detector | Analyze</title>
 
 <style>
+:root {
+    --primary: #6a11cb;
+    --secondary: #2575fc;
+    --bg-dark: #0f1020;
+    --card-bg: rgba(255,255,255,0.08);
+    --text-light: #f5f5f5;
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    min-height: 100vh;
     font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, #1d2671, #c33764);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
+    background: linear-gradient(135deg, #0f1020, #1b1d3c);
+    color: var(--text-light);
+    min-height: 100vh;
 }
 
-.container {
-    width: 100%;
-    max-width: 480px;
-    padding: 20px;
+/* ---------- HEADER ---------- */
+header {
+    padding: 24px 40px;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
-.card {
-    background: #ffffff;
+/* ---------- MAIN LAYOUT ---------- */
+.main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+}
+
+@media (max-width: 900px) {
+    .main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- PANELS ---------- */
+.panel {
+    background: var(--card-bg);
     border-radius: 18px;
     padding: 35px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
-    text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     animation: fadeUp 0.8s ease forwards;
 }
 
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(25px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-h1 {
-    margin-bottom: 8px;
-    font-size: 28px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    color: transparent;
+.panel h2 {
+    margin-top: 0;
+    font-size: 26px;
 }
 
-.subtitle {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 25px;
-}
-
+/* ---------- UPLOAD ---------- */
 input[type="file"] {
     width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
+    padding: 14px;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: none;
 }
 
 button {
     width: 100%;
     padding: 14px;
-    border-radius: 10px;
-    border: none;
     font-size: 16px;
     font-weight: bold;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    color: white;
+    border-radius: 10px;
+    border: none;
     cursor: pointer;
-    transition: 0.25s;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(118,75,162,0.5);
+    box-shadow: 0 8px 25px rgba(106,17,203,0.5);
 }
 
-button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.loader {
-    margin: 20px auto 10px;
-    width: 40px;
-    height: 40px;
-    border: 4px solid #eee;
-    border-top: 4px solid #764ba2;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    display: none;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.status {
+/* ---------- RESULT ---------- */
+#status {
     margin-top: 15px;
-    font-size: 14px;
-    color: #555;
+    opacity: 0.85;
 }
 
-.result {
+.result-box {
     margin-top: 20px;
-    padding: 18px;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
     display: none;
 }
 
-.result.human {
-    background: #e8f7ee;
-    color: #0a7a3d;
+.result-title {
+    font-size: 22px;
+    margin-bottom: 12px;
 }
 
-.result.ai {
-    background: #fdeaea;
-    color: #b40000;
+/* ---------- CONFIDENCE BAR ---------- */
+.bar {
+    background: rgba(255,255,255,0.15);
+    height: 18px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.confidence {
-    font-size: 14px;
-    margin-top: 6px;
-    font-weight: normal;
+.bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00e0ff, #00ff88);
+    transition: width 1.2s ease;
 }
 
 .explanation {
-    margin-top: 10px;
-    font-size: 14px;
-    font-weight: normal;
+    margin-top: 15px;
+    font-size: 15px;
+    line-height: 1.5;
+    opacity: 0.9;
 }
 
-.back {
-    margin-top: 18px;
+/* ---------- FOOTER ---------- */
+footer {
+    text-align: center;
+    padding: 25px;
     font-size: 13px;
-    color: #667eea;
-    cursor: pointer;
-    text-decoration: underline;
+    opacity: 0.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <div class="card">
-        <h1>🎧 Audio Analysis</h1>
-        <p class="subtitle">
-            Upload an audio file to check whether it is
-            <b>Human</b> or <b>AI Generated</b>
-        </p>
+<header>🎧 AI Audio Detection</header>
 
-        <input type="file" id="audioFile" accept=".wav,.mp3">
+<div class="main">
 
-        <button id="analyzeBtn" onclick="uploadAudio()">Analyze Audio</button>
+    <!-- UPLOAD PANEL -->
+    <div class="panel">
+        <h2>Upload Audio</h2>
+        <p>Select a voice sample (MP3 / WAV) to analyze.</p>
 
-        <div id="loader" class="loader"></div>
-        <div id="status" class="status"></div>
+        <input type="file" id="audioFile" accept=".mp3,.wav">
+        <button onclick="analyzeAudio()">Analyze Audio</button>
 
-        <div id="result" class="result">
-            <div id="predictionText"></div>
-            <div id="confidenceText" class="confidence"></div>
-            <div id="explanationText" class="explanation"></div>
-        </div>
-
-        <div class="back" onclick="goHome()">← Back to Home</div>
+        <div id="status"></div>
     </div>
+
+    <!-- RESULT PANEL -->
+    <div class="panel">
+        <h2>Analysis Result</h2>
+
+        <div id="resultBox" class="result-box">
+            <div class="result-title" id="predictionText"></div>
+
+            <div class="bar">
+                <div class="bar-fill" id="confidenceBar"></div>
+            </div>
+
+            <div class="explanation" id="explanationText"></div>
+        </div>
+    </div>
+
 </div>
 
+<footer>
+    © 2026 AI Voice Detector | Hackathon Project
+</footer>
+
 <script>
-async function uploadAudio() {
+async function analyzeAudio() {
     const fileInput = document.getElementById("audioFile");
     const status = document.getElementById("status");
-    const loader = document.getElementById("loader");
-    const result = document.getElementById("result");
-    const btn = document.getElementById("analyzeBtn");
-
-    result.style.display = "none";
-    status.innerText = "";
+    const resultBox = document.getElementById("resultBox");
+    const predictionText = document.getElementById("predictionText");
+    const confidenceBar = document.getElementById("confidenceBar");
+    const explanationText = document.getElementById("explanationText");
 
     if (!fileInput.files.length) {
         alert("Please select an audio file");
         return;
     }
 
+    status.innerText = "🔍 Analyzing audio...";
+    resultBox.style.display = "none";
+    confidenceBar.style.width = "0%";
+
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
-
-    loader.style.display = "block";
-    btn.disabled = true;
-    status.innerText = "⏳ Analyzing audio...";
 
     try {
         const response = await fetch(
@@ -217,33 +215,24 @@ async function uploadAudio() {
         );
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || "API error");
+        if (!response.ok) throw new Error(data.detail);
 
-        result.style.display = "block";
-        result.className = "result " + (data.prediction === "human" ? "human" : "ai");
+        resultBox.style.display = "block";
+        predictionText.innerText =
+            `Prediction: ${data.prediction.toUpperCase()}`;
 
-        document.getElementById("predictionText").innerText =
-            data.prediction === "human" ? "🧑 Human Voice Detected" : "🤖 AI Generated Voice";
+        // Animate confidence
+        setTimeout(() => {
+            confidenceBar.style.width = (data.confidence * 100).toFixed(1) + "%";
+        }, 200);
 
-        document.getElementById("confidenceText").innerText =
-            `Confidence: ${data.confidence}`;
-
-        document.getElementById("explanationText").innerText =
-            data.explanation || "";
-
+        explanationText.innerText = data.explanation;
         status.innerText = "✅ Analysis complete";
 
     } catch (err) {
-        console.error(err);
         status.innerText = "❌ Failed to analyze audio";
-    } finally {
-        loader.style.display = "none";
-        btn.disabled = false;
+        console.error(err);
     }
-}
-
-function goHome() {
-    window.location.href = "index.html";
 }
 </script>
 
