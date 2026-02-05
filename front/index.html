@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Classification | AI Detector</title>
+
+    <!-- ===== INLINE CSS ===== -->
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            height: 100vh;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #6b8dd6, #8e37d7);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 16px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            animation: fadeUp 1s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 26px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 18px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        #result {
+            margin-top: 16px;
+            opacity: 0;
+        }
+
+        .show {
+            animation: popIn 0.4s ease forwards;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .loader {
+            margin: 18px auto 0;
+            width: 45px;
+            height: 45px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .explanation {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>🎧 Audio Classification</h1>
+        <p class="subtitle">
+            Upload an audio file to detect whether it is
+            <strong>Human</strong> or <strong>AI Generated</strong>
+        </p>
+
+        <input type="file" id="audioFile" accept=".wav,.mp3">
+        <button onclick="uploadAudio()">Analyze Audio</button>
+
+        <div id="loader" class="loader"></div>
+        <div id="status"></div>
+        <div id="result"></div>
+    </div>
+</div>
+
+<!-- ===== INLINE JAVASCRIPT ===== -->
+<script>
+async function uploadAudio() {
+    const fileInput = document.getElementById("audioFile");
+    const status = document.getElementById("status");
+    const result = document.getElementById("result");
+    const loader = document.getElementById("loader");
+
+    result.innerHTML = "";
+    result.classList.remove("show");
+
+    if (fileInput.files.length === 0) {
+        alert("Please select an audio file");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    loader.style.display = "block";
+    status.innerText = "⏳ Analyzing audio...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/v1/detect-voice", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer hackathon_test_key_123"
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "API error");
+
+        status.innerText = "✅ Analysis Complete";
+
+        result.innerHTML = `
+            <div><strong>Prediction:</strong> ${data.prediction}</div>
+            <div><strong>Confidence:</strong> ${data.confidence}</div>
+            <div class="explanation">
+                <strong>Why?</strong><br>
+                ${data.explanation}
+            </div>
+        `;
+
+        result.classList.add("show");
+
+    } catch (err) {
+        status.innerText = "❌ Error analyzing audio";
+        console.error(err);
+    } finally {
+        loader.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
