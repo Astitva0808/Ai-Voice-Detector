@@ -3,227 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Audio Classification | Home</title>
+<title>AI Voice Authenticity Detection</title>
 
 <style>
+:root {
+    --bg: #0b0d13;
+    --panel: #12141c;
+    --accent: #7c7cff;
+    --text: #ffffff;
+    --muted: #a1a1aa;
+}
+
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, #1d2671, #c33764);
-    color: white;
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- LAYOUT ---------- */
+.wrapper {
+    width: 100%;
+    max-width: 900px;
+    padding: 40px 24px;
+}
+
+.panel {
+    background: var(--panel);
+    border-radius: 22px;
+    padding: 56px;
+    box-shadow: 0 35px 90px rgba(0,0,0,0.6);
+    text-align: center;
 }
 
 /* ---------- HERO ---------- */
-.hero {
-    text-align: center;
-    padding: 90px 20px;
+h1 {
+    font-size: 42px;
+    margin: 0 0 12px;
+    font-weight: 700;
 }
 
-.hero h1 {
-    font-size: 52px;
-    margin-bottom: 15px;
+.subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
 }
 
-.hero p {
-    font-size: 20px;
-    max-width: 800px;
-    margin: auto;
-    opacity: 0.95;
-}
-
+/* ---------- BUTTONS ---------- */
 .buttons {
-    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 50px;
 }
 
 button {
-    padding: 14px 34px;
-    margin: 10px;
-    font-size: 16px;
-    border-radius: 30px;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
-    transition: 0.3s;
+    background: var(--accent);
+    color: #fff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--text);
 }
 
 button:hover {
-    transform: scale(1.05);
-}
-
-.signin {
-    background: white;
-    color: #1d2671;
-}
-
-.signup {
-    background: #ffcc00;
-    color: black;
-}
-
-.demo {
-    background: #00e0ff;
-    color: black;
-}
-
-/* ---------- SECTIONS ---------- */
-.section {
-    background: white;
-    color: #333;
-    padding: 80px 10%;
-}
-
-.section h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.section p {
-    text-align: center;
-    max-width: 800px;
-    margin: auto;
-    font-size: 18px;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(124,124,255,0.45);
 }
 
 /* ---------- FEATURES ---------- */
 .features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 40px;
-    margin-top: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
 }
 
 .feature {
-    background: #f7f7f7;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
+    background: rgba(255,255,255,0.05);
+    padding: 26px;
+    border-radius: 16px;
+    text-align: left;
 }
 
-.feature img {
-    width: 80px;
-    margin-bottom: 15px;
+.feature h3 {
+    margin-top: 0;
+    font-size: 18px;
 }
 
-/* ---------- HOW IT WORKS ---------- */
-.steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.step {
-    background: #f1f1f1;
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
+.feature p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
 }
 
 /* ---------- FOOTER ---------- */
 .footer {
-    background: #111;
-    padding: 30px;
-    text-align: center;
-    font-size: 14px;
+    margin-top: 40px;
+    font-size: 13px;
+    color: var(--muted);
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero">
-    <h1>🎧 AI Audio Classification</h1>
-    <p>
-        Detect whether an audio file is <b>Human-spoken</b> or
-        <b>AI-generated</b> using a machine-learning powered system
-        built for students and hackathons.
-    </p>
+<div class="wrapper">
+<div class="panel">
 
-    <div class="buttons">
-        <button type="button" class="signin" onclick="goSignin()">Sign In</button>
-        <button type="button" class="signup" onclick="goSignup()">Sign Up</button>
-       <a href="/Ai-Voice-Detector/detect.html">
-    <button type="button" class="demo">Try Demo</button>
-</a>
+<h1>AI Voice Authenticity Detection</h1>
 
+<p class="subtitle">
+Detect whether an audio sample is <b>human-spoken</b> or <b>AI-generated</b>
+using a machine-learning powered system built for hackathons and research.
+</p>
+
+<div class="buttons">
+    <button onclick="goDemo()">Try Demo</button>
+    <button class="secondary" onclick="goSignin()">Sign In</button>
+    <button class="secondary" onclick="goSignup()">Sign Up</button>
+</div>
+
+<div class="features">
+    <div class="feature">
+        <h3>AI-Powered Analysis</h3>
+        <p>
+            Uses trained models to identify patterns unique to synthetic
+            and natural human speech.
+        </p>
+    </div>
+
+    <div class="feature">
+        <h3>Confidence & Explanation</h3>
+        <p>
+            Provides interpretable confidence scores with reasoning
+            instead of black-box predictions.
+        </p>
+    </div>
+
+    <div class="feature">
+        <h3>Fast & Secure</h3>
+        <p>
+            Audio is processed securely with optimized inference
+            for near-instant results.
+        </p>
     </div>
 </div>
 
-<!-- ABOUT -->
-<div class="section">
-    <h2>Why This Platform?</h2>
-    <p>
-        With the rise of AI-generated voices, verifying audio authenticity
-        has become essential. This platform allows anyone to quickly
-        analyze voice samples with confidence.
-    </p>
-
-    <div class="features">
-        <div class="feature">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI">
-            <h3>AI Powered</h3>
-            <p>Uses trained machine learning models for detection.</p>
-        </div>
-
-        <div class="feature">
-            <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" alt="Students">
-            <h3>Student Friendly</h3>
-            <p>Simple interface designed for easy understanding.</p>
-        </div>
-
-        <div class="feature">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Secure">
-            <h3>Fast & Secure</h3>
-            <p>Audio is processed efficiently and securely.</p>
-        </div>
-    </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="section" style="background:#fafafa;">
-    <h2>How It Works</h2>
-
-    <div class="steps">
-        <div class="step">
-            <h3>1️⃣ Choose</h3>
-            <p>Select or upload an audio file.</p>
-        </div>
-
-        <div class="step">
-            <h3>2️⃣ Analyze</h3>
-            <p>The AI model processes the audio.</p>
-        </div>
-
-        <div class="step">
-            <h3>3️⃣ Detect</h3>
-            <p>Classifies audio as Human or AI.</p>
-        </div>
-
-        <div class="step">
-            <h3>4️⃣ Explain</h3>
-            <p>Provides confidence and explanation.</p>
-        </div>
-    </div>
-</div>
-
-<!-- FOOTER -->
 <div class="footer">
-    © 2026 AI Audio Classification Platform | Built for Hackathons
+    © 2026 AI Voice Detector | Hackathon Project
 </div>
 
-<!-- ===== NAVIGATION SCRIPT ===== -->
+</div>
+</div>
+
 <script>
+function goDemo() {
+    window.location.href = "detect.html";
+}
+
 function goSignin() {
-    window.location.href = "./signin.html";
+    window.location.href = "signin.html";
 }
 
 function goSignup() {
-    window.location.href = "./signup.html";
+    window.location.href = "signup.html";
 }
-
 </script>
-
 
 </body>
 </html>
